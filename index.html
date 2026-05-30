@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cody's Safe Internet Tools</title>
+  <style>
+    :root {
+      --bg: #f8f1e7;
+      --card: #fffaf2;
+      --ink: #2b2118;
+      --soft: #6f5d4a;
+      --line: #e4d4bd;
+      --button: #2f5f4f;
+      --buttonText: #ffffff;
+      --warn: #fff3cd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #fffaf2 0%, var(--bg) 55%, #eadbc7 100%);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 36px 18px 24px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 7vw, 4rem);
+      line-height: 1.05;
+      margin: 0 0 14px;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      color: var(--soft);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .safe-note {
+      margin: 24px auto 0;
+      max-width: 680px;
+      background: var(--warn);
+      border: 1px solid #e5c35c;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 24px;
+    }
+
+    .card {
+      background: rgba(255,250,242,0.92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 14px 35px rgba(43,33,24,0.10);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+    }
+
+    .card p {
+      color: var(--soft);
+      margin: 0 0 18px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    a.button, button.button {
+      appearance: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: var(--button);
+      color: var(--buttonText);
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 46px;
+    }
+
+    button.secondary {
+      background: #d9c7ad;
+      color: var(--ink);
+    }
+
+    details {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    pre {
+      overflow-x: auto;
+      white-space: pre;
+      background: #201914;
+      color: #f8f1e7;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--soft);
+      margin: 30px 0 10px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>Safe Internet Tools</h1>
+      <p class="subtitle">Simple little helpers that make websites calmer, easier to read, and less scary.</p>
+      <div class="safe-note">
+        <strong>Mom rule:</strong> If a page says your device is infected, your information is leaked, or you must pay right now, close the tab and call Cody first.
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>🛡 Mom Safety Filter</h2>
+        <p>Adds a big warning when a website uses scary scam words like “dark web,” “virus detected,” or “immediate action required.”</p>
+        <div class="button-row">
+          <a class="button" href="mom-safety-filter.user.js">Install / Download</a>
+          <button class="button secondary" onclick="copyScript('safetyScript')">Copy Code</button>
+        </div>
+        <details>
+          <summary>Show script code</summary>
+          <pre id="safetyScript">// ==UserScript==
+// @name         Mom Safety Filter - Scam Warning
+// @namespace    mom-safety-filter
+// @version      1.0
+// @description  Warns before scammy scare pages trick someone into spending money
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  const dangerWords = [
+    "dark web",
+    "your information has been leaked",
+    "your device is infected",
+    "virus detected",
+    "trojan detected",
+    "click here to remove",
+    "your ip address is exposed",
+    "vpn required",
+    "renew your protection",
+    "security alert",
+    "immediate action required",
+    "your computer is at risk",
+    "your phone is infected",
+    "call microsoft",
+    "call apple support"
+  ];
+
+  function scanPage() {
+    if (!document.body) return;
+    const text = document.body.innerText.toLowerCase();
+    const found = dangerWords.some(word => text.includes(word));
+
+    if (found && !document.getElementById("momSafetyWarning")) {
+      const warning = document.createElement("div");
+      warning.id = "momSafetyWarning";
+      warning.innerHTML = `
+        <strong>Pause. This may be a scam.</strong><br>
+        Do not click buttons, call numbers, or pay money from this page.<br>
+        Close this tab and ask Cody first.
+      `;
+
+      warning.style.position = "fixed";
+      warning.style.top = "0";
+      warning.style.left = "0";
+      warning.style.right = "0";
+      warning.style.zIndex = "999999999";
+      warning.style.background = "#fff3cd";
+      warning.style.color = "#3b2f00";
+      warning.style.fontSize = "20px";
+      warning.style.fontFamily = "Arial, sans-serif";
+      warning.style.padding = "18px";
+      warning.style.textAlign = "center";
+      warning.style.borderBottom = "4px solid #d39e00";
+      warning.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+
+      document.body.appendChild(warning);
+    }
+  }
+
+  scanPage();
+  setInterval(scanPage, 2000);
+})();</pre>
+        </details>
+      </article>
+
+      <article class="card">
+        <h2>📖 Cozy Reading Mode</h2>
+        <p>Adds a friendly button that makes websites softer, bigger, and easier to read.</p>
+        <div class="button-row">
+          <a class="button" href="cozy-reading-mode.user.js">Install / Download</a>
+          <button class="button secondary" onclick="copyScript('cozyScript')">Copy Code</button>
+        </div>
+        <details>
+          <summary>Show script code</summary>
+          <pre id="cozyScript">// ==UserScript==
+// @name         Mom's Cozy Reading Mode
+// @namespace    mom-cozy-reading
+// @version      1.0
+// @description  Makes websites softer, bigger, and easier to read
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+  const button = document.createElement("button");
+
+  button.textContent = "Aa";
+  button.style.position = "fixed";
+  button.style.bottom = "20px";
+  button.style.right = "20px";
+  button.style.zIndex = "999999";
+  button.style.fontSize = "20px";
+  button.style.padding = "12px 15px";
+  button.style.borderRadius = "999px";
+  button.style.border = "none";
+  button.style.background = "#f3e7d3";
+  button.style.color = "#2b2118";
+  button.style.boxShadow = "0 4px 12px rgba(0,0,0,0.25)";
+
+  let cozy = false;
+
+  button.onclick = function () {
+    cozy = !cozy;
+
+    document.body.style.background = cozy ? "#f8f1e7" : "";
+    document.body.style.color = cozy ? "#2b2118" : "";
+    document.body.style.fontSize = cozy ? "20px" : "";
+    document.body.style.lineHeight = cozy ? "1.7" : "";
+
+    document.querySelectorAll("p, li, span, div, article").forEach(el => {
+      el.style.fontSize = cozy ? "20px" : "";
+      el.style.lineHeight = cozy ? "1.7" : "";
+    });
+
+    button.textContent = cozy ? "✓" : "Aa";
+  };
+
+  document.body.appendChild(button);
+})();</pre>
+        </details>
+      </article>
+    </section>
+
+    <p class="footer">Made with love. Close scary pages. Call someone real.</p>
+  </main>
+
+  <script>
+    async function copyScript(id) {
+      const code = document.getElementById(id).innerText;
+      try {
+        await navigator.clipboard.writeText(code);
+        alert("Copied. Now paste it into Tampermonkey or Userscripts.");
+      } catch (error) {
+        alert("Copy did not work automatically. Press and hold the code, then choose Copy.");
+      }
+    }
+  </script>
+</body>
+</html>
